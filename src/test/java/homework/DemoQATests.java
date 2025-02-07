@@ -44,15 +44,19 @@ public class DemoQATests {
         // Заполнение Name
         driver.findElement(By.cssSelector("#firstName")).sendKeys("Ivan");
         driver.findElement(By.cssSelector("#lastName")).sendKeys("Ivanov");
+        Thread.sleep(1000);
 
         // Заполнение email
         driver.findElement(By.cssSelector("#userEmail")).sendKeys("Ivan@mail.ru");
+        Thread.sleep(1000);
 
         // Заполнение gender
         driver.findElement(By.xpath("//label[@for='gender-radio-1']")).click();
+        Thread.sleep(1000);
 
         // Заполнение mobile
         driver.findElement(By.cssSelector("#userNumber")).sendKeys("8999999999");
+        Thread.sleep(1000);
 
         // Заполнение date of birth
         driver.findElement(By.cssSelector("#dateOfBirthInput")).click();
@@ -66,23 +70,22 @@ public class DemoQATests {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[text()='Biology']"))).click();
 
-        //driver.switchTo().activeElement().click();
-        //     driver.findElement(By.id("react-select-2-option-0")).click();
-        Thread.sleep(2000);
-
         // Заполнение Hobbies
         driver.findElement(By.xpath("//label[@for='hobbies-checkbox-2']")).click();
-        Thread.sleep(2000);
+        Thread.sleep(1000);
 
         // Заполнение Picture
         driver.findElement(By.id("uploadPicture")).sendKeys("/home/ann/Downloads/_Формат файлов для теста/cat.jpg");
+        Thread.sleep(1000);
 
         // Заполнение Current Address
         driver.findElement(By.id("currentAddress")).sendKeys("Nsk, Super street");
+        Thread.sleep(1000);
 
         // Скролл вниз страницы
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollBy(0, 1000);");
+        Thread.sleep(1000);
 
         // Заполнение State and City
 //        driver.findElement(By.xpath("//div[text()='Select State']")).click();
