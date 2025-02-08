@@ -1,6 +1,7 @@
 package homework;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,9 +13,19 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
 import java.time.Duration;
 
 public class DemoQATests {
+
+    String firstName = "Ivan";
+    String lastName = "Ivanov";
+    String email = "Ivan@mail.ru";
+    String mobile = "8888888888";
+    String currentAddress = "Nsk, Super street";
+    String state = "Rajasthan";
+    String city = "Jaiselmer";
+
 
     private WebDriver driver;
 
@@ -42,12 +53,12 @@ public class DemoQATests {
         driver.get("https://demoqa.com/automation-practice-form");
 
         // Заполнение Name
-        driver.findElement(By.cssSelector("#firstName")).sendKeys("Ivan");
-        driver.findElement(By.cssSelector("#lastName")).sendKeys("Ivanov");
+        driver.findElement(By.cssSelector("#firstName")).sendKeys(firstName);
+        driver.findElement(By.cssSelector("#lastName")).sendKeys(lastName);
         Thread.sleep(1000);
 
         // Заполнение email
-        driver.findElement(By.cssSelector("#userEmail")).sendKeys("Ivan@mail.ru");
+        driver.findElement(By.cssSelector("#userEmail")).sendKeys(email);
         Thread.sleep(1000);
 
         // Заполнение gender
@@ -55,7 +66,7 @@ public class DemoQATests {
         Thread.sleep(1000);
 
         // Заполнение mobile
-        driver.findElement(By.cssSelector("#userNumber")).sendKeys("8999999999");
+        driver.findElement(By.cssSelector("#userNumber")).sendKeys(mobile);
         Thread.sleep(1000);
 
         // Заполнение date of birth
@@ -75,16 +86,18 @@ public class DemoQATests {
         Thread.sleep(1000);
 
         // Заполнение Picture
-        driver.findElement(By.id("uploadPicture")).sendKeys("/home/ann/Downloads/_Формат файлов для теста/cat.jpg");
+        File picture = new File("src/cat.jpg");
+        driver.findElement(By.id("uploadPicture")).sendKeys(picture.getAbsolutePath());
         Thread.sleep(1000);
 
         // Заполнение Current Address
-        driver.findElement(By.id("currentAddress")).sendKeys("Nsk, Super street");
+        driver.findElement(By.id("currentAddress")).sendKeys(currentAddress);
         Thread.sleep(1000);
 
-        // Скролл вниз страницы
+        // Скролл до кнопки
+        WebElement submitButton = driver.findElement(By.id("submit"));
         JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("window.scrollBy(0, 1000);");
+        js.executeScript("arguments[0].scrollIntoView(true);", submitButton);
         Thread.sleep(1000);
 
         // Заполнение State and City
@@ -99,66 +112,65 @@ public class DemoQATests {
 //        Thread.sleep(2000);
 
         driver.findElement(By.id("state")).click();
-        driver.switchTo().activeElement().sendKeys("Rajasthan");
+        driver.switchTo().activeElement().sendKeys(state);
         driver.switchTo().activeElement().sendKeys(Keys.ENTER);
 
         driver.findElement(By.id("city")).click();
-        driver.switchTo().activeElement().sendKeys("Jaiselmer");
+        driver.switchTo().activeElement().sendKeys(city);
         driver.switchTo().activeElement().sendKeys(Keys.ENTER);
 
         // Клик по кнопке
         driver.findElement(By.id("submit")).click();
 
-        //Check form
+        //Check form (SoftAssert позволяют продолжать проверки даже если одна упадет)
+        SoftAssertions softAssert = new SoftAssertions();
+
         WebElement studentName = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr/td[2]"));
-        String expectedStudentName = "Ivan Ivanov";
         String actualStudentName = studentName.getText();
-        Assertions.assertEquals(expectedStudentName, actualStudentName);
+        softAssert.assertThat(actualStudentName).isEqualTo((firstName + " " + lastName));
 
         WebElement studentEmail = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[2]/td[2]"));
-        String expectedEmail = "Ivan@mail.ru";
         String actualEmail = studentEmail.getText();
-        Assertions.assertEquals(expectedEmail, actualEmail);
+        softAssert.assertThat(actualEmail).isEqualTo(email);
 
-        WebElement gender = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[3]/td[2]"));
+        WebElement studentGender = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[3]/td[2]"));
         String expectedGender = "Male";
-        String actualGender = gender.getText();
-        Assertions.assertEquals(expectedGender, actualGender);
+        String actualGender = studentGender.getText();
+        softAssert.assertThat(actualGender).isEqualTo(expectedGender);
 
-        WebElement mobile = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[4]/td[2]"));
-        String expectedMobile = "8999999999";
-        String actualMobile = mobile.getText();
-        Assertions.assertEquals(expectedMobile, actualMobile);
+        WebElement studentMobile = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[4]/td[2]"));
+        String actualMobile = studentMobile.getText();
+        softAssert.assertThat(actualMobile).isEqualTo(mobile);
 
-        WebElement birthDate = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[5]/td[2]"));
+        WebElement studentBirthDate = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[5]/td[2]"));
         String expectedBirthDate = "11 August,1988";
-        String actualBirthDate = birthDate.getText();
-        Assertions.assertEquals(expectedBirthDate, actualBirthDate);
+        String actualBirthDate = studentBirthDate.getText();
+        softAssert.assertThat(actualBirthDate).isEqualTo(expectedBirthDate);
 
         WebElement subjects = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[6]/td[2]"));
         String expectedSubjects = "Biology";
         String actualSubjects = subjects.getText();
-        Assertions.assertEquals(expectedSubjects, actualSubjects);
+        softAssert.assertThat(actualSubjects).isEqualTo(expectedSubjects);
 
         WebElement hobbies = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[7]/td[2]"));
         String expectedHobbies = "Reading";
         String actualHobbies = hobbies.getText();
-        Assertions.assertEquals(expectedHobbies, actualHobbies);
+        softAssert.assertThat(actualHobbies).isEqualTo(expectedHobbies);
 
-        WebElement picture = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[8]/td[2]"));
+        WebElement pictureText = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[8]/td[2]"));
         String expectedPicture = "cat.jpg";
-        String actualPicture = picture.getText();
-        Assertions.assertEquals(expectedPicture, actualPicture);
+        String actualPicture = pictureText.getText();
+        softAssert.assertThat(actualPicture).isEqualTo(expectedPicture);
 
-        WebElement address = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[9]/td[2]"));
-        String expectedAddress = "Nsk, Super street";
-        String actualAddress = address.getText();
-        Assertions.assertEquals(expectedAddress, actualAddress);
+        WebElement studentAddress = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[9]/td[2]"));
+        String actualAddress = studentAddress.getText();
+        softAssert.assertThat(actualAddress).isEqualTo(currentAddress);
 
         WebElement stateCity = driver.findElement(By.xpath("//*[@class='table-responsive']//tbody/tr[10]/td[2]"));
-        String expectedStateCity = "Rajasthan Jaiselmer";
         String actualStateCity = stateCity.getText();
-        Assertions.assertEquals(expectedStateCity, actualStateCity);
+        softAssert.assertThat(actualStateCity).isEqualTo((state + " " + city));
+
+        softAssert.assertAll();
     }
 
     @AfterEach
