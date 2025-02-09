@@ -30,7 +30,7 @@ public class WebShopTests {
 
     @ParameterizedTest(name = "{index} - Add to cart")
     @ValueSource(strings = {"Laptop", "Smartphone", "Fiction"})
-    void CartAdd(String param) throws InterruptedException {
+    void cartAdd(String param) throws InterruptedException {
         driver.findElement(By.id("small-searchterms")).sendKeys(param, Keys.ENTER);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
